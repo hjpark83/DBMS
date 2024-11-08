@@ -1,0 +1,21 @@
+Command : [ .\role.py info -a 5 actor ]
+Total rows: 5
+p_id | p_name         | role  | m_name                    | casting               
+----------------------------------------------------------------------------------
+53   | Robert Mitchum | actor | Brotherhood of the Rose   | John Eliot            
+100  | Rowan Atkinson | actor | Not the Nine O'Clock News | Various, Various Roles
+228  | Kevin Spacey   | actor | House of Cards            | Francis Underwood     
+282  | Scott Bairstow | actor | Breaking News             | Ethan Barnes          
+317  | Clancy Brown   | actor | Breaking News             | Peter Kozyck          
+
+Command : [ .\role.py info -i 71002 actor ]
+Total rows: 6
+p_id   | p_name           | role  | casting                                       
+----------------------------------------------------------------------------------
+638    | William Shatner  | actor | Buzz Howard                                   
+2079   | Steve Forrest    | actor | Samson Toey                                   
+80867  | Abner Biberman   | actor | Abraham Lincoln Imhook, Mr. Imhook            
+103071 | Richard Bradford | actor | Brock                                         
+553436 | A Martinez       | actor | None                                          
+907636 | Clint Walker     | actor | Cal 'Kodiak' McCay, Cal 'Kodiak' McKay, Kodiak
+

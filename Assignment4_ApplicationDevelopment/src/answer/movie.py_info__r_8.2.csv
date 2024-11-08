@@ -1,0 +1,23 @@
+m_id,m_name,m_type,start_year,end_year,is_adult,runtimes,imdb_rating,final_rating,genres
+63919,The Johnny Cash Show,tvSeries,1969-01-01,1971-01-01,False,60,8.6,8.6000000000000000,Music
+90524,Sivi dom,tvSeries,1984-01-01,1986-01-01,False,50,8.8,8.7990731204943357,Drama
+103359,Batman: The Animated Series,tvSeries,1992-01-01,1995-01-01,False,23,9.0,8.9998863358900742,"Action, Adventure, Animation"
+121002,Noggin the Nog,tvSeries,1959-01-01,1965-01-01,False,10,8.5,8.4291338582677165,"Animation, Family, Fantasy"
+316613,Los simuladores,tvSeries,2002-01-01,2004-01-01,False,60,9.2,9.1997997997997998,"Adventure, Comedy, Mystery"
+398443,Cronkite Remembers,tvMiniSeries,1997-01-01,1997-01-01,False,360,8.4,8.4000000000000000,"Biography, Documentary"
+490714,Booh!,tvSeries,2005-01-01,2008-01-01,False,30,8.7,8.2950000000000000,"Comedy, Family, Fantasy"
+1088753,Subtext,tvSeries,2006-01-01,2007-01-01,False,120,8.6,8.6000000000000000,
+1244386,El Señor de la Querencia,tvSeries,2008-01-01,2008-01-01,False,30,8.4,8.4000000000000000,"Drama, Thriller"
+1288869,The Genius of Photography,tvMiniSeries,2007-01-01,2007-01-01,False,352,8.5,8.5000000000000000,Documentary
+1298725,Contrato de amor,tvSeries,2008-01-01,2009-01-01,False,60,8.4,8.1444444444444444,"Drama, Romance"
+1508179,Shonen ninja Kaze no Fujimaru,tvSeries,1964-01-01,1965-01-01,False,30,8.4,8.4047619047619048,"Action, Animation"
+1856010,House of Cards,tvSeries,2013-01-01,2018-01-01,False,50,8.6,8.5999960684096717,Drama
+2372238,New Zealand from Above,tvSeries,2012-01-01,2012-01-01,False,43,8.4,8.4000000000000000,Documentary
+4012658,Comic Splash: The web-series,tvMiniSeries,2014-01-01,2014-01-01,False,10,8.8,8.8000000000000000,"Comedy, News"
+4680240,Club de Cuervos,tvSeries,2015-01-01,2019-01-01,False,40,8.2,8.2000000000000000,"Comedy, Drama, Sport"
+5189670,Making a Murderer,tvSeries,2015-01-01,2018-01-01,False,60,8.5,8.4999613638558872,"Crime, Documentary"
+6133034,TIME: The Kalief Browder Story,tvMiniSeries,2017-01-01,2017-01-01,False,43,8.4,8.4000000000000000,"Biography, Documentary"
+9914700,Aunty Donna: Best Content Ever!!1!,tvSeries,2017-01-01,2017-01-01,False,5,8.2,8.2000000000000000,Comedy
+11597332,An Egg's Guide to Minecraft,tvSeries,2012-01-01,2020-01-01,False,7,8.9,8.9000000000000000,"Animation, Comedy, Family"
+15460842,How America Works,tvSeries,2021-01-01,2022-01-01,False,60,8.8,8.8000000000000000,Documentary
+27622290,Baking with the Reys,tvSeries,2023-01-01,2023-01-01,False,24,8.9,8.9000000000000000,Family

@@ -1,0 +1,79 @@
+m_id,m_name,m_type,start_year,end_year,is_adult,runtimes,imdb_rating,final_rating,genres
+54544,The Hathaways,tvSeries,1961-01-01,1962-01-01,False,30,7.1,7.1000000000000000,Comedy
+63866,The Andy Williams Show,tvSeries,1969-01-01,1971-01-01,False,60,7.9,7.9018867924528302,"Comedy, Music"
+63916,Jimmy Durante Presents the Lennon Sisters,tvSeries,1969-01-01,1970-01-01,False,60,7.5,7.5000000000000000,"Comedy, Music"
+63919,The Johnny Cash Show,tvSeries,1969-01-01,1971-01-01,False,60,8.6,8.6000000000000000,Music
+71002,Kodiak,tvSeries,1974-01-01,1974-01-01,False,30,7.2,7.2400000000000000,"Action, Adventure, Crime"
+71048,Second Time Around,tvSeries,1974-01-01,1975-01-01,False,30,7.0,7.0625000000000000,Comedy
+78651,Married: The First Year,tvSeries,1979-01-01,1979-01-01,False,60,6.4,6.4000000000000000,Drama
+80253,Not the Nine O'Clock News,tvSeries,1979-01-01,1982-01-01,False,25,7.9,7.9000000000000000,Comedy
+81901,McClain's Law,tvSeries,1981-01-01,1982-01-01,False,60,7.6,7.5936842105263158,"Crime, Drama"
+90524,Sivi dom,tvSeries,1984-01-01,1986-01-01,False,50,8.8,8.7990731204943357,Drama
+96546,A Bit of a Do,tvSeries,1989-01-01,1989-01-01,False,60,7.1,7.0648535564853556,"Comedy, Drama"
+98802,Get a Life,tvSeries,1990-01-01,1992-01-01,False,30,8.1,8.0998023064250412,"Comedy, Fantasy"
+98841,Kurt Olssons julkalender,tvSeries,1990-01-01,1990-01-01,False,15,6.3,6.3000000000000000,Family
+98891,Peter Pan and the Pirates,tvSeries,1990-01-01,1991-01-01,False,30,7.2,7.1779891304347826,"Adventure, Animation, Family"
+103359,Batman: The Animated Series,tvSeries,1992-01-01,1995-01-01,False,23,9.0,8.9998863358900742,"Action, Adventure, Animation"
+108916,Schwarz greift ein,tvSeries,1994-01-01,1999-01-01,False,88,6.3,6.3000000000000000,"Crime, Drama"
+121002,Noggin the Nog,tvSeries,1959-01-01,1965-01-01,False,10,8.5,8.4291338582677165,"Animation, Family, Fantasy"
+211878,La usurpadora,tvSeries,1998-01-01,1998-01-01,False,60,7.7,7.7017332328560663,"Drama, Romance"
+238794,Pa heeft een lief,tvSeries,2000-01-01,2000-01-01,False,30,4.2,5.3600000000000000,"Comedy, Romance"
+245022,Breaking News,tvSeries,2002-01-01,2002-01-01,False,60,6.2,6.2000000000000000,Drama
+247851,Aprender a volar,tvSeries,1994-01-01,1995-01-01,False,60,7.8,7.8333333333333333,"Comedy, Drama, Family"
+269541,Mesa de noticias,tvSeries,1983-01-01,1987-01-01,False,45,7.9,7.9000000000000000,Comedy
+289036,What's with Andy?,tvSeries,2001-01-01,2007-01-01,False,30,7.6,7.6014859228362878,"Animation, Comedy, Family"
+292870,Wild On...,tvSeries,1997-01-01,2009-01-01,False,60,6.2,6.2000000000000000,"Adventure, Reality-TV"
+316613,Los simuladores,tvSeries,2002-01-01,2004-01-01,False,60,9.2,9.1997997997997998,"Adventure, Comedy, Mystery"
+331381,Brandy: Special Delivery,tvSeries,2002-01-01,2002-01-01,False,30,5.9,6.1285714285714286,"Family, Music, Reality-TV"
+341833,Kaninlandet,tvSeries,1999-01-01,2002-01-01,False,20,7.8,8.0428571428571429,Family
+380869,The Collector,tvSeries,2004-01-01,2006-01-01,False,60,6.6,6.6050359712230216,"Action, Drama, Fantasy"
+399943,07 zglos sie,tvSeries,1976-01-01,1987-01-01,False,60,7.3,7.2724137931034483,"Crime, Mystery"
+439402,Talk About,tvSeries,1988-01-01,1990-01-01,False,30,8.1,8.1000000000000000,"Family, Game-Show"
+490714,Booh!,tvSeries,2005-01-01,2008-01-01,False,30,8.7,8.2950000000000000,"Comedy, Family, Fantasy"
+784920,Power Rangers Operation Overdrive,tvSeries,2007-01-01,2007-01-01,False,22,5.5,5.4973529411764706,"Action, Adventure, Family"
+826211,Hollywood Babylon,tvSeries,1992-01-01,1993-01-01,False,30,7.5,7.5172413793103448,Drama
+843196,Haetbit ssodajida,tvSeries,2004-01-01,2004-01-01,False,60,6.3,6.3000000000000000,"Drama, Romance"
+1088753,Subtext,tvSeries,2006-01-01,2007-01-01,False,120,8.6,8.6000000000000000,
+1244386,El Señor de la Querencia,tvSeries,2008-01-01,2008-01-01,False,30,8.4,8.4000000000000000,"Drama, Thriller"
+1298725,Contrato de amor,tvSeries,2008-01-01,2009-01-01,False,60,8.4,8.1444444444444444,"Drama, Romance"
+1352421,Natsume yûjinchô,tvSeries,2008-01-01,2017-01-01,False,24,8.1,8.0949941792782305,"Animation, Comedy, Drama"
+1492219,Telerop 2009 - Es ist noch was zu retten,tvSeries,1974-01-01,1974-01-01,False,25,7.2,7.2000000000000000,"Drama, Sci-Fi"
+1508179,Shonen ninja Kaze no Fujimaru,tvSeries,1964-01-01,1965-01-01,False,30,8.4,8.4047619047619048,"Action, Animation"
+1528871,86-60-86,tvSeries,1994-01-01,1998-01-01,False,25,5.8,5.8000000000000000,News
+1578250,What's That About?,tvSeries,2005-01-01,2007-01-01,False,60,7.4,7.4000000000000000,Documentary
+1606854,1 Girl 5 Gays,tvSeries,2009-01-01,2014-01-01,False,30,7.8,7.8000000000000000,Talk-Show
+1856010,House of Cards,tvSeries,2013-01-01,2018-01-01,False,50,8.6,8.5999960684096717,Drama
+2196757,Inu x Boku SS,tvSeries,2012-01-01,2012-01-01,False,24,7.0,6.9875759249033683,"Animation, Comedy, Romance"
+2372238,New Zealand from Above,tvSeries,2012-01-01,2012-01-01,False,43,8.4,8.4000000000000000,Documentary
+2390334,Chosen,tvSeries,2013-01-01,2014-01-01,False,22,7.3,7.2955487336914812,"Action, Drama, Thriller"
+3018178,Riddler,tvSeries,2013-01-01,2013-01-01,False,1,6.2,6.1250000000000000,"Action, Animation"
+3437610,Blood Sweat and Heels,tvSeries,2014-01-01,2015-01-01,False,60,6.2,6.0447761194029851,"Documentary, Reality-TV"
+4110246,Mata Hari,tvSeries,2016-01-01,2017-01-01,False,60,6.0,5.9774859287054409,"Drama, History"
+4196822,Danger Mouse,tvSeries,2015-01-01,2019-01-01,False,22,7.1,7.0826685006877579,"Action, Adventure, Animation"
+4339188,The Inca: Masters of the Clouds,tvSeries,2015-01-01,2015-01-01,False,60,7.5,7.5000000000000000,Documentary
+4343788,The URL with Phred Show,tvSeries,2001-01-01,2002-01-01,False,60,7.7,7.7000000000000000,Animation
+4479780,Söndagsöppet,tvSeries,1990-01-01,2003-01-01,False,60,5.5,5.5000000000000000,Talk-Show
+4680240,Club de Cuervos,tvSeries,2015-01-01,2019-01-01,False,40,8.2,8.2000000000000000,"Comedy, Drama, Sport"
+5189670,Making a Murderer,tvSeries,2015-01-01,2018-01-01,False,60,8.5,8.4999613638558872,"Crime, Documentary"
+5422000,Mister Brau,tvSeries,2015-01-01,2018-01-01,False,40,6.3,6.2968085106382979,Comedy
+5861134,Encantadia,tvSeries,2016-01-01,2017-01-01,False,30,6.7,6.7013574660633484,"Action, Adventure, Crime"
+6213220,"Ernest et Célestine, la collection",tvSeries,2017-01-01,2021-01-01,False,13,7.8,7.8102439024390244,"Animation, Family, Short"
+6519032,Grazhdanskiy brak,tvSeries,2017-01-01,2017-01-01,False,21,6.3,6.3000000000000000,Comedy
+7956274,Edha,tvSeries,2018-01-01,2018-01-01,False,40,4.9,4.9029787234042553,"Drama, Mystery, Thriller"
+8232658,Ingen Retur,tvSeries,2018-01-01,2018-01-01,False,18,8.0,8.0000000000000000,Comedy
+9426290,Queen Sono,tvSeries,2020-01-01,2020-01-01,False,43,6.1,6.0897727272727273,"Action, Crime, Drama"
+9914700,Aunty Donna: Best Content Ever!!1!,tvSeries,2017-01-01,2017-01-01,False,5,8.2,8.2000000000000000,Comedy
+10506510,Das letzte Wort,tvSeries,2020-01-01,2020-01-01,False,40,7.1,7.1000000000000000,"Comedy, Drama"
+11597332,An Egg's Guide to Minecraft,tvSeries,2012-01-01,2020-01-01,False,7,8.9,8.9000000000000000,"Animation, Comedy, Family"
+12683972,Cheverísimo,tvSeries,1992-01-01,2002-01-01,False,60,6.3,6.3000000000000000,Comedy
+13415620,Zdrady,tvSeries,2013-01-01,2020-01-01,False,44,4.0,4.2400000000000000,Drama
+13800178,V tihom omute...,tvSeries,2021-01-01,2021-01-01,False,30,7.0,7.0000000000000000,Drama
+14578626,Star Wars Vehicle Flythroughs,tvSeries,2021-01-01,2021-01-01,False,4,6.2,6.2000000000000000,Sci-Fi
+14731794,Gukyeongi,tvSeries,2021-01-01,2021-01-01,False,70,7.1,7.0845744680851064,"Action, Comedy, Thriller"
+14758812,O Dia Depois da Eleição,tvSeries,2018-01-01,2018-01-01,False,27,4.6,4.6870967741935484,Documentary
+15460842,How America Works,tvSeries,2021-01-01,2022-01-01,False,60,8.8,8.8000000000000000,Documentary
+15852584,UP UP,tvSeries,2021-01-01,2022-01-01,False,104,7.5,7.2500000000000000,"Comedy, Drama"
+26238728,Bednyye Abramovichi,tvSeries,2023-01-01,2023-01-01,False,30,7.2,7.2000000000000000,Comedy
+27391405,Isekai Shoukan wa Nidome desu,tvSeries,2023-01-01,2023-01-01,False,24,5.4,5.3905829596412556,"Action, Adventure, Animation"
+27622290,Baking with the Reys,tvSeries,2023-01-01,2023-01-01,False,24,8.9,8.9000000000000000,Family
+28516985,Istorik,tvSeries,2021-01-01,2023-01-01,False,53,7.0,6.5625000000000000,"Mystery, Thriller"

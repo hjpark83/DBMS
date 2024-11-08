@@ -1,0 +1,312 @@
+import time
+import argparse
+from helpers.connection import conn
+from helpers.utils import print_rows
+from helpers.utils import print_rows_to_file
+from helpers.utils import is_valid_genre
+from helpers.utils import print_command_to_file
+from helpers.utils import make_csv
+
+def display_info(search_type, search_value):
+    cur = None
+    try:
+        if conn is None:
+            print("Database connection is not established")
+            return False
+            
+        cur = conn.cursor()
+        cur.execute("SET search_path to s_2021088304")
+
+        if search_type == 'id' :
+            sql = """
+            SELECT 
+                cu.c_id, 
+                cu.c_name, 
+                cu.email, 
+                cu.gender, 
+                cu.phone, 
+                STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+            FROM customer cu 
+            JOIN prefer p ON cu.c_id = p.c_id 
+            JOIN genre gr ON p.gr_id = gr.gr_id
+            WHERE cu.c_id = %(id)s
+            GROUP BY cu.c_id, cu.c_name, cu.email, cu.gender, cu.phone
+            ORDER BY cu.c_id ASC;
+            """
+            cur.execute(sql, {"id": search_value})
+
+        elif search_type == 'name' :
+            sql = """
+            SELECT
+                cu.c_id, 
+                cu.c_name, 
+                cu.email, 
+                cu.gender, 
+                cu.phone, 
+                STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+            FROM customer cu 
+            JOIN prefer p ON cu.c_id = p.c_id 
+            JOIN genre gr ON p.gr_id = gr.gr_id
+            WHERE cu.c_name ILIKE %(name)s
+            GROUP BY cu.c_id, cu.c_name, cu.email, cu.gender, cu.phone
+            ORDER BY cu.c_id ASC;
+            """
+            cur.execute(sql, {"name": search_value})
+
+        elif search_type == 'genre' :
+            sql = """
+            SELECT 
+                cu.c_id, 
+                cu.c_name, 
+                cu.email, 
+                cu.gender, 
+                cu.phone, 
+                STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+            FROM customer cu JOIN prefer p ON cu.c_id = p.c_id JOIN genre gr ON p.gr_id = gr.gr_id
+            WHERE cu.c_id IN (
+                    SELECT cu.c_id
+                    FROM customer cu
+                    JOIN prefer p ON cu.c_id = p.c_id
+                    JOIN genre gr ON p.gr_id = gr.gr_id
+                    WHERE gr.gr_name = %(genre)s
+                    )
+            GROUP BY cu.c_id, cu.c_name, cu.email, cu.gender, cu.phone
+            ORDER BY cu.c_id ASC;
+            """
+            cur.execute(sql, {"genre": search_value})
+
+        elif search_type == 'all' :
+            sql = """
+            SELECT
+                cu.c_id, 
+                cu.c_name, 
+                cu.email, 
+                cu.gender, 
+                cu.phone, 
+                STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+            FROM customer cu 
+            JOIN prefer p ON cu.c_id = p.c_id 
+            JOIN genre gr ON p.gr_id = gr.gr_id
+            GROUP BY cu.c_id, cu.c_name, cu.email, cu.gender, cu.phone
+            ORDER BY cu.c_id ASC
+            LIMIT %(all)s;
+            """
+            cur.execute(sql, {"all": search_value})
+
+        else :
+            print("can't search by", search_type)
+            return False
+
+        rows = cur.fetchall()
+        if not rows:
+            print("No results found.")
+            return False
+        else:
+            column_names = [desc[0] for desc in cur.description]
+            #
+            #print_rows_to_file(column_names, rows)
+            #make_csv(column_names, rows)
+            #
+            print_rows(column_names, rows)
+            return True
+
+    except Exception as err:
+        print(f"Error: {err}")
+        return False
+    finally:
+        if cur is not None:
+            cur.close()
+
+
+def insert_customer(id, name, email, pwd, gender, phone, genres) :
+    try:
+        cur = conn.cursor()
+        cur.execute("SET search_path to s_2021088304")
+        
+        sql = """
+        INSERT INTO customer (c_id, c_name, email, pwd, gender, phone)
+        VALUES (%s, %s, %s, %s, %s, %s);
+        """
+        cur.execute(sql, (id, name, email, pwd, gender, phone))
+        
+        for genre in genres.split(','):
+            genre = genre.strip()
+            if not is_valid_genre(genre):
+                print(f"Error: '{genre}' is not a valid genre.")
+                return False
+            
+            sql_genre = "SELECT gr_id FROM genre WHERE gr_name = %s;"
+            cur.execute(sql_genre, (genre,))
+            gr_id = cur.fetchone()
+            
+            if not gr_id:
+                sql_insert_prefer = """
+                INSERT INTO prefer (c_id, gr_id)
+                VALUES (%s, %s);
+                """
+                cur.execute(sql_insert_prefer, (id, gr_id))
+                
+        conn.commit()
+        print(f"Customer {name} inserted successfully.")
+        return True
+    
+    except Exception as e:
+        conn.rollback()
+        print(f"Error inserting customer: {e}.")
+        return False
+    finally:
+        cur.close()
+        
+
+def update_customer(id, target, value) :
+    try:
+        cur = conn.cursor()
+        cur.execute("SET search_path to s_2021088304")
+        
+        valid_targets = {
+            'email': 'email',
+            'password': 'pwd',
+            'phone': 'phone'
+        }
+        
+        if target not in valid_targets:
+            print(f"Error: '{target}' is not a valid target.")
+            return False
+        
+        sql = f"""
+        UPDATE customer
+        SET {valid_targets[target]} = %s
+        WHERE c_id = %s;
+        """
+        
+        cur.execute(sql, (value, id))
+        
+        if cur.rowcount == 0:
+            print(f"Error: No customer with id {id} found.")
+            return False
+        
+        conn.commit()
+        print(f"Customer {id} updated successfully.")
+        return True
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Error updating customer: {e}.")
+        return False
+    finally:
+        cur.close()
+    
+
+def delete_customer(id) :
+    try:
+        cur = conn.cursor()
+        cur.execute("SET search_path to s_2021088304")
+        
+        tables = ['watch', 'prefer', 'comment']
+        
+        # 연관된 데이터 삭제 (cascade)
+        for table in tables:
+            sql = f"DELETE FROM {table} WHERE c_id = %s;"
+            cur.execute(sql, (id,))
+            
+        # 고객 정보 삭제
+        sql = "DELETE FROM customer WHERE c_id = %s;"
+        cur.execute(sql, (id,))
+        
+        if cur.rowcount == 0:
+            print(f"Error: No customer with id {id} found.")
+            return False
+        
+        conn.commit()
+        print(f"Customer {id} deleted successfully.")
+        return True
+    
+    except Exception as e:
+        conn.rollback()
+        print(f"Error deleting customer: {e}.")
+        return False
+    finally:
+        cur.close()
+
+
+def main(args):
+    if args.command == "info":
+        if args.id:
+            display_info('id',args.id)
+        elif args.name:
+            display_info('name', args.name)
+        elif args.genre:
+            if not is_valid_genre(args.genre):
+                print(f"Error: '{args.genre}' is not a valid genre.")
+            else:
+                display_info('genre', args.genre)
+        elif args.all:
+            display_info('all', args.all)
+
+    elif args.command == "insert":
+        insert_customer(args.id, args.name, 
+            args.email, args.pwd, args.gender, args.phone, args.genres)
+
+    elif args.command == "update":
+        update_customer(args.id, args.target, args.value)
+        
+    elif args.command == "delete":
+        delete_customer(args.id)
+        
+    else :
+        print("Error: query command error.")
+
+
+if __name__ == "__main__":
+    #
+    #print_command_to_file()
+    #
+    start = time.time()
+    
+    parser = argparse.ArgumentParser(description = """
+    how to use
+    1. info [-i(c_id) / -n(c_name) / -g(genre) / -a (all)] [value]
+    2. insert c_id, c_name, email, pwd, gender, phone -g (genre1, genre2, genre3)
+    3. update -i [c_id] [-m(e-mail) / -p(password) / -ph(phone)] [new_value]
+    4. delete -i [c_id]
+    """, formatter_class=argparse.RawTextHelpFormatter)
+    
+    subparsers = parser.add_subparsers(dest='command', 
+        help='select one of query types [info, insert, update, delete]')
+
+    # [1-1] info
+    parser_info = subparsers.add_parser('info', help='Display target customers info')
+    group_info = parser_info.add_mutually_exclusive_group(required=True)
+    group_info.add_argument('-i', dest='id', type=int, help='c_id of customer entity')
+    group_info.add_argument('-n', dest='name', type=str, help='c_name of customer entity')
+    group_info.add_argument('-g', dest='genre', type=str, help='genre which customer prefer')
+    group_info.add_argument('-a', dest='all', type=str, help='display rows with top [value]')
+
+    # [1-2] insert
+    parser_insert = subparsers.add_parser('insert', help='Insert new customer data')
+    parser_insert.add_argument('id', type=int, help='c_id of customer entity')
+    parser_insert.add_argument('name', type=str, help='c_name of customer entity')
+    parser_insert.add_argument('email', type=str, help='email of customer entity')
+    parser_insert.add_argument('pwd', type=str, help='password of customer entity')
+    parser_insert.add_argument('gender', type=str, help='gender of customer entity')
+    parser_insert.add_argument('phone', type=str, help='phone number of customer entity')
+    parser_insert.add_argument('-g', dest='genres', type=str, help='preferred genres (comma-separated)')
+
+    # [1-3] update
+    parser_update = subparsers.add_parser('update', help='Update one of customer data')
+    parser_update.add_argument('-i', dest='id', type=int, required=True, help='c_id of customer to update')
+    group_update = parser_update.add_mutually_exclusive_group(required=True)
+    group_update.add_argument('-m', dest='email', type=str, help='update email')
+    group_update.add_argument('-p', dest='pwd', type=str, help='update password')
+    group_update.add_argument('-ph', dest='phone', type=str, help='update phone number')
+    parser_update.add_argument('value', type=str, help='new value to update')
+
+    # [1-4] delete
+    parser_delete = subparsers.add_parser('delete', help='Delete customer data with associated data')
+    parser_delete.add_argument('-i', dest='id', type=int, required=True, help='c_id of customer entity')
+    
+    args = parser.parse_args()
+    main(args)
+    
+    print("Running Time: ", end="")
+    print(time.time() - start)

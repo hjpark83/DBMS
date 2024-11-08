@@ -1,0 +1,6 @@
+m_id,m_name,m_type,start_year,end_year,is_adult,runtimes,imdb_rating,final_rating,genres
+54544,The Hathaways,tvSeries,1961-01-01,1962-01-01,False,30,7.1,7.1000000000000000,Comedy
+63866,The Andy Williams Show,tvSeries,1969-01-01,1971-01-01,False,60,7.9,7.9018867924528302,"Comedy, Music"
+63916,Jimmy Durante Presents the Lennon Sisters,tvSeries,1969-01-01,1970-01-01,False,60,7.5,7.5000000000000000,"Comedy, Music"
+63919,The Johnny Cash Show,tvSeries,1969-01-01,1971-01-01,False,60,8.6,8.6000000000000000,Music
+71002,Kodiak,tvSeries,1974-01-01,1974-01-01,False,30,7.2,7.2400000000000000,"Action, Adventure, Crime"

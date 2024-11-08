@@ -1,0 +1,7 @@
+m_id,m_name,m_type,start_year,end_year,is_adult,runtimes,imdb_rating,final_rating,genres
+26238728,Bednyye Abramovichi,tvSeries,2023-01-01,2023-01-01,False,30,7.2,7.2000000000000000,Comedy
+27391405,Isekai Shoukan wa Nidome desu,tvSeries,2023-01-01,2023-01-01,False,24,5.4,5.3905829596412556,"Action, Adventure, Animation"
+27622290,Baking with the Reys,tvSeries,2023-01-01,2023-01-01,False,24,8.9,8.9000000000000000,Family
+27688981,Absolutni debiutanci,tvMiniSeries,2023-01-01,2023-01-01,False,48,7.2,7.1941719971570718,"Drama, Romance"
+28516985,Istorik,tvSeries,2021-01-01,2023-01-01,False,53,7.0,6.5625000000000000,"Mystery, Thriller"
+29390842,Nepsyt toimistossa,tvMiniSeries,2023-01-01,2023-01-01,False,3,6.5,6.8333333333333333,Comedy
