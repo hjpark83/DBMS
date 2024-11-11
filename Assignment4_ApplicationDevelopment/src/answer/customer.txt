@@ -68,7 +68,7 @@ c_id | c_name | email           | gender | phone            | preferred_genres
 ------------------------------------------------------------------------------------
 9999 | dblab  | dblab@gmail.com | M      | +82 123-456-7890 | Action, Drama, Romance
 
-Command : [ .\customer.py update -i 9999 -p passord dblab ]
+Command : [ .\customer.py update -i 9999 -p password dblab ]
 Total rows: 1
 c_id | c_name | email           | gender | phone            | preferred_genres      
 ------------------------------------------------------------------------------------

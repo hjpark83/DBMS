@@ -30,8 +30,8 @@ def display_info(search_type, search_value, search_role=None):
                 STRING_AGG(DISTINCT m.m_name, ', ') AS movies,
                 STRING_AGG(DISTINCT pa.casting, ', ') AS characters
             FROM participant p
-            JOIN Participate pa ON p.p_id = pa.p_id
-            JOIN movie m ON pa.m_id = m.m_id
+                JOIN Participate pa ON p.p_id = pa.p_id
+                JOIN movie m ON pa.m_id = m.m_id
             WHERE pa.role = %s
             GROUP BY p.p_id, p.p_name, pa.role
             ORDER BY p.p_id
@@ -48,8 +48,8 @@ def display_info(search_type, search_value, search_role=None):
                 pa.role AS role, 
                 STRING_AGG(DISTINCT pa.casting, ', ') AS characters
             FROM participant p
-            JOIN Participate pa ON p.p_id = pa.p_id
-            JOIN movie m ON pa.m_id = m.m_id
+                JOIN Participate pa ON p.p_id = pa.p_id
+                JOIN movie m ON pa.m_id = m.m_id
             WHERE m.m_id = %s AND pa.role = %s
             GROUP BY p.p_id, p.p_name, pa.role
             ORDER BY p.p_id;
@@ -65,7 +65,7 @@ def display_info(search_type, search_value, search_role=None):
                 pa.role AS role, 
                 STRING_AGG(DISTINCT pa.casting, ', ') AS characters
             FROM participant p
-            JOIN Participate pa ON p.p_id = pa.p_id
+                JOIN Participate pa ON p.p_id = pa.p_id
             WHERE pa.m_id = %s AND pa.role = %s
             GROUP BY p.p_id, p.p_name, pa.role
             ORDER BY p.p_id;
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     group_info = parser_info.add_mutually_exclusive_group(required=True)
 
     group_info.add_argument('-a', dest='all', type=int, help='Limit the number of participants')
-    group_info.add_argument('-o', dest='one', type=int, help='Display participants for a specific movie ID')
+    group_info.add_argument('-i', dest='one', type=int, help='Display participants for a specific movie ID')
     parser_info.add_argument('role', type=str, help='Role of the participant (e.g., actor, director)')
 
     args = parser.parse_args()

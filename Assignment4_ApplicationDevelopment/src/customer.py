@@ -13,220 +13,257 @@ def display_info(search_type, search_value):
         if conn is None:
             print("Database connection is not established")
             return False
-            
+
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
 
-        if search_type == 'id' :
+        if search_type == 'id':
             sql = """
-            SELECT 
-                cu.c_id, 
-                cu.c_name, 
-                cu.email, 
-                cu.gender, 
-                cu.phone, 
-                STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
-            FROM customer cu 
-            JOIN prefer p ON cu.c_id = p.c_id 
-            JOIN genre gr ON p.gr_id = gr.gr_id
+            SELECT cu.c_id, 
+                   cu.c_name, 
+                   cu.email, 
+                   cu.gender, 
+                   cu.phone,
+                   STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+            FROM customer cu
+                JOIN prefer p ON cu.c_id = p.c_id
+                JOIN genre gr ON p.gr_id = gr.gr_id
             WHERE cu.c_id = %(id)s
-            GROUP BY cu.c_id, cu.c_name, cu.email, cu.gender, cu.phone
+            GROUP BY cu.c_id
             ORDER BY cu.c_id ASC;
             """
             cur.execute(sql, {"id": search_value})
 
-        elif search_type == 'name' :
+        elif search_type == 'name':
             sql = """
-            SELECT
-                cu.c_id, 
-                cu.c_name, 
-                cu.email, 
-                cu.gender, 
-                cu.phone, 
-                STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
-            FROM customer cu 
-            JOIN prefer p ON cu.c_id = p.c_id 
-            JOIN genre gr ON p.gr_id = gr.gr_id
+            SELECT cu.c_id, 
+                   cu.c_name, 
+                   cu.email, 
+                   cu.gender, 
+                   cu.phone,
+                   STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+            FROM customer cu
+                JOIN prefer p ON cu.c_id = p.c_id
+                JOIN genre gr ON p.gr_id = gr.gr_id
             WHERE cu.c_name ILIKE %(name)s
-            GROUP BY cu.c_id, cu.c_name, cu.email, cu.gender, cu.phone
+            GROUP BY cu.c_id
             ORDER BY cu.c_id ASC;
             """
             cur.execute(sql, {"name": search_value})
 
-        elif search_type == 'genre' :
+        elif search_type == 'genre':
             sql = """
-            SELECT 
-                cu.c_id, 
-                cu.c_name, 
-                cu.email, 
-                cu.gender, 
-                cu.phone, 
-                STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
-            FROM customer cu JOIN prefer p ON cu.c_id = p.c_id JOIN genre gr ON p.gr_id = gr.gr_id
-            WHERE cu.c_id IN (
-                    SELECT cu.c_id
-                    FROM customer cu
-                    JOIN prefer p ON cu.c_id = p.c_id
-                    JOIN genre gr ON p.gr_id = gr.gr_id
-                    WHERE gr.gr_name = %(genre)s
-                    )
-            GROUP BY cu.c_id, cu.c_name, cu.email, cu.gender, cu.phone
+            SELECT cu.c_id, 
+                   cu.c_name, 
+                   cu.email, 
+                   cu.gender, 
+                   cu.phone,
+                   STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+            FROM customer cu
+                JOIN prefer p ON cu.c_id = p.c_id
+                JOIN genre gr ON p.gr_id = gr.gr_id
+            WHERE gr.gr_name = %(genre)s
+            GROUP BY cu.c_id
             ORDER BY cu.c_id ASC;
             """
             cur.execute(sql, {"genre": search_value})
 
-        elif search_type == 'all' :
+        elif search_type == 'all':
             sql = """
-            SELECT
-                cu.c_id, 
-                cu.c_name, 
-                cu.email, 
-                cu.gender, 
-                cu.phone, 
-                STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
-            FROM customer cu 
-            JOIN prefer p ON cu.c_id = p.c_id 
-            JOIN genre gr ON p.gr_id = gr.gr_id
-            GROUP BY cu.c_id, cu.c_name, cu.email, cu.gender, cu.phone
+            SELECT cu.c_id, 
+                   cu.c_name, 
+                   cu.email, 
+                   cu.gender, 
+                   cu.phone,
+                   STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+            FROM customer cu
+                JOIN prefer p ON cu.c_id = p.c_id
+                JOIN genre gr ON p.gr_id = gr.gr_id
+            GROUP BY cu.c_id
             ORDER BY cu.c_id ASC
-            LIMIT %(all)s;
+            LIMIT %(limit)s;
             """
-            cur.execute(sql, {"all": search_value})
+            cur.execute(sql, {"limit": search_value})
 
-        else :
-            print("can't search by", search_type)
+        else:
+            print(f"Error: Invalid search type '{search_type}'")
             return False
 
         rows = cur.fetchall()
-        if not rows:
-            print("No results found.")
-            return False
-        else:
+        if rows:
             column_names = [desc[0] for desc in cur.description]
             #
             #print_rows_to_file(column_names, rows)
             #make_csv(column_names, rows)
             #
             print_rows(column_names, rows)
-            return True
+        else:
+            print("No results found.")
+        return True
 
-    except Exception as err:
-        print(f"Error: {err}")
+    except Exception as e:
+        print(f"Error: {e}")
         return False
     finally:
-        if cur is not None:
+        if cur:
             cur.close()
 
 
-def insert_customer(id, name, email, pwd, gender, phone, genres) :
+
+def insert_customer(id, name, email, pwd, gender, phone, genres):
+    cur = None
     try:
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
-        
+
+        # 고객 정보 삽입
         sql = """
         INSERT INTO customer (c_id, c_name, email, pwd, gender, phone)
         VALUES (%s, %s, %s, %s, %s, %s);
         """
         cur.execute(sql, (id, name, email, pwd, gender, phone))
-        
-        for genre in genres.split(','):
+
+        genres_list = genres.split()
+
+        for genre in genres_list:
             genre = genre.strip()
             if not is_valid_genre(genre):
                 print(f"Error: '{genre}' is not a valid genre.")
+                conn.rollback()
                 return False
-            
+
             sql_genre = "SELECT gr_id FROM genre WHERE gr_name = %s;"
             cur.execute(sql_genre, (genre,))
             gr_id = cur.fetchone()
-            
-            if not gr_id:
+
+            if gr_id:
                 sql_insert_prefer = """
                 INSERT INTO prefer (c_id, gr_id)
                 VALUES (%s, %s);
                 """
-                cur.execute(sql_insert_prefer, (id, gr_id))
-                
+                cur.execute(sql_insert_prefer, (id, gr_id[0]))
+            else:
+                print(f"Error: Genre '{genre}' not found in the database.")
+                conn.rollback()
+                return False
+
         conn.commit()
         print(f"Customer {name} inserted successfully.")
         return True
-    
+
     except Exception as e:
         conn.rollback()
-        print(f"Error inserting customer: {e}.")
+        print(f"Error inserting customer: {e}")
         return False
     finally:
-        cur.close()
-        
+        if cur:
+            cur.close()
 
-def update_customer(id, target, value) :
+        
+        
+def update_customer(id, email=None, password=None, phone=None):
+    cur = None
     try:
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
-        
-        valid_targets = {
-            'email': 'email',
-            'password': 'pwd',
-            'phone': 'phone'
-        }
-        
-        if target not in valid_targets:
-            print(f"Error: '{target}' is not a valid target.")
+
+        # 업데이트할 필드 결정
+        if email:
+            target_field = 'email'
+            target_value = email
+        elif password:
+            target_field = 'pwd'
+            target_value = password
+        elif phone:
+            target_field = 'phone'
+            target_value = phone
+        else:
+            print("Error: No valid target specified for update.")
             return False
-        
-        sql = f"""
-        UPDATE customer
-        SET {valid_targets[target]} = %s
-        WHERE c_id = %s;
-        """
-        
-        cur.execute(sql, (value, id))
-        
+
+        # 업데이트 쿼리 실행
+        sql = f"UPDATE customer SET {target_field} = %s WHERE c_id = %s;"
+        cur.execute(sql, (target_value, id))
+
         if cur.rowcount == 0:
             print(f"Error: No customer with id {id} found.")
+            conn.rollback()
             return False
-        
+
         conn.commit()
         print(f"Customer {id} updated successfully.")
+
+        # 업데이트된 정보 출력
+        cur.execute("""
+        SELECT cu.c_id, 
+               cu.c_name, 
+               cu.email, 
+               cu.gender, 
+               cu.phone,
+               STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+        FROM customer cu
+            LEFT JOIN prefer p ON cu.c_id = p.c_id
+            LEFT JOIN genre gr ON p.gr_id = gr.gr_id
+        WHERE cu.c_id = %s
+        GROUP BY cu.c_id;
+        """, (id,))
+        updated_row = cur.fetchall()
+
+        if updated_row:
+            column_names = [desc[0] for desc in cur.description]
+            print_rows(column_names, updated_row)
+        else:
+            print("No results found.")
         return True
 
     except Exception as e:
         conn.rollback()
-        print(f"Error updating customer: {e}.")
+        print(f"Error updating customer: {e}")
         return False
     finally:
-        cur.close()
+        if cur:
+            cur.close()
     
 
-def delete_customer(id) :
+def delete_customer(id):
+    cur = None
     try:
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
-        
-        tables = ['watch', 'prefer', 'comment']
-        
-        # 연관된 데이터 삭제 (cascade)
+
+        tables = ['prefer', 'watch', 'comment']
         for table in tables:
-            sql = f"DELETE FROM {table} WHERE c_id = %s;"
-            cur.execute(sql, (id,))
+            cur.execute(f"""
+                SELECT EXISTS (
+                    SELECT 1 
+                    FROM information_schema.tables 
+                    WHERE table_name = '{table}'
+                );
+            """)
+            table_exists = cur.fetchone()[0]
             
-        # 고객 정보 삭제
-        sql = "DELETE FROM customer WHERE c_id = %s;"
-        cur.execute(sql, (id,))
-        
+            if table_exists:
+                cur.execute(f"DELETE FROM {table} WHERE c_id = %s;", (id,))
+
+        cur.execute("DELETE FROM customer WHERE c_id = %s;", (id,))
+
         if cur.rowcount == 0:
             print(f"Error: No customer with id {id} found.")
+            conn.rollback()
             return False
-        
+
         conn.commit()
         print(f"Customer {id} deleted successfully.")
         return True
-    
+
     except Exception as e:
         conn.rollback()
-        print(f"Error deleting customer: {e}.")
+        print(f"Error deleting customer: {e}")
         return False
     finally:
-        cur.close()
+        if cur:
+            cur.close()
+
 
 
 def main(args):
@@ -246,13 +283,17 @@ def main(args):
     elif args.command == "insert":
         insert_customer(args.id, args.name, 
             args.email, args.pwd, args.gender, args.phone, args.genres)
-
     elif args.command == "update":
-        update_customer(args.id, args.target, args.value)
-        
+        if args.email:
+            update_customer(args.id, email=args.email)
+        elif args.password:
+            update_customer(args.id, password=args.password)
+        elif args.phone:
+            update_customer(args.id, phone=args.phone)
+        else:
+            print("Error: No valid field specified for update.")
     elif args.command == "delete":
         delete_customer(args.id)
-        
     else :
         print("Error: query command error.")
 
@@ -280,7 +321,7 @@ if __name__ == "__main__":
     group_info.add_argument('-i', dest='id', type=int, help='c_id of customer entity')
     group_info.add_argument('-n', dest='name', type=str, help='c_name of customer entity')
     group_info.add_argument('-g', dest='genre', type=str, help='genre which customer prefer')
-    group_info.add_argument('-a', dest='all', type=str, help='display rows with top [value]')
+    group_info.add_argument('-a', dest='all', type=int, help='display rows with top [value]')
 
     # [1-2] insert
     parser_insert = subparsers.add_parser('insert', help='Insert new customer data')
@@ -293,13 +334,11 @@ if __name__ == "__main__":
     parser_insert.add_argument('-g', dest='genres', type=str, help='preferred genres (comma-separated)')
 
     # [1-3] update
-    parser_update = subparsers.add_parser('update', help='Update one of customer data')
-    parser_update.add_argument('-i', dest='id', type=int, required=True, help='c_id of customer to update')
-    group_update = parser_update.add_mutually_exclusive_group(required=True)
-    group_update.add_argument('-m', dest='email', type=str, help='update email')
-    group_update.add_argument('-p', dest='pwd', type=str, help='update password')
-    group_update.add_argument('-ph', dest='phone', type=str, help='update phone number')
-    parser_update.add_argument('value', type=str, help='new value to update')
+    parser_update = subparsers.add_parser('update', help='Update customer data')
+    parser_update.add_argument('-i', dest='id', type=int, required=True, help='Customer ID to update')
+    parser_update.add_argument('-m', '--email', type=str, help='Update email')
+    parser_update.add_argument('-p', '--password', type=str, help='Update password')
+    parser_update.add_argument('-ph', '--phone', type=str, help='Update phone number')
 
     # [1-4] delete
     parser_delete = subparsers.add_parser('delete', help='Delete customer data with associated data')
