@@ -1,4 +1,3 @@
-import time
 import argparse
 from helpers.connection import conn
 from helpers.utils import print_rows
@@ -17,17 +16,20 @@ def display_info(search_type, search_value):
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
 
-        if search_type == 'id':
-            sql = """
-            SELECT cu.c_id, 
-                   cu.c_name, 
-                   cu.email, 
-                   cu.gender, 
+        base_sql = """
+            SELECT cu.c_id,
+                   cu.c_name,
+                   cu.email,
+                   cu.gender,
                    cu.phone,
-                   STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+                   STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres  
             FROM customer cu
                 JOIN prefer p ON cu.c_id = p.c_id
                 JOIN genre gr ON p.gr_id = gr.gr_id
+        """ # 공통적으로 사용되는 SQL문
+
+        if search_type == 'id':
+            sql = base_sql + """
             WHERE cu.c_id = %(id)s
             GROUP BY cu.c_id
             ORDER BY cu.c_id ASC;
@@ -35,16 +37,7 @@ def display_info(search_type, search_value):
             cur.execute(sql, {"id": search_value})
 
         elif search_type == 'name':
-            sql = """
-            SELECT cu.c_id, 
-                   cu.c_name, 
-                   cu.email, 
-                   cu.gender, 
-                   cu.phone,
-                   STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
-            FROM customer cu
-                JOIN prefer p ON cu.c_id = p.c_id
-                JOIN genre gr ON p.gr_id = gr.gr_id
+            sql = base_sql + """
             WHERE cu.c_name ILIKE %(name)s
             GROUP BY cu.c_id
             ORDER BY cu.c_id ASC;
@@ -52,33 +45,15 @@ def display_info(search_type, search_value):
             cur.execute(sql, {"name": search_value})
 
         elif search_type == 'genre':
-            sql = """
-            SELECT cu.c_id, 
-                   cu.c_name, 
-                   cu.email, 
-                   cu.gender, 
-                   cu.phone,
-                   STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
-            FROM customer cu
-                JOIN prefer p ON cu.c_id = p.c_id
-                JOIN genre gr ON p.gr_id = gr.gr_id
-            WHERE gr.gr_name = %(genre)s
+            sql = base_sql + """
             GROUP BY cu.c_id
+            HAVING STRING_AGG(DISTINCT gr.gr_name, ', ') ILIKE %(genre)s
             ORDER BY cu.c_id ASC;
             """
-            cur.execute(sql, {"genre": search_value})
+            cur.execute(sql, {"genre": f"%{search_value}%"})
 
         elif search_type == 'all':
-            sql = """
-            SELECT cu.c_id, 
-                   cu.c_name, 
-                   cu.email, 
-                   cu.gender, 
-                   cu.phone,
-                   STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
-            FROM customer cu
-                JOIN prefer p ON cu.c_id = p.c_id
-                JOIN genre gr ON p.gr_id = gr.gr_id
+            sql = base_sql + """
             GROUP BY cu.c_id
             ORDER BY cu.c_id ASC
             LIMIT %(limit)s;
@@ -96,6 +71,7 @@ def display_info(search_type, search_value):
             #print_rows_to_file(column_names, rows)
             #make_csv(column_names, rows)
             #
+            print(f"Total rows: {len(rows)}")
             print_rows(column_names, rows)
         else:
             print("No results found.")
@@ -109,14 +85,12 @@ def display_info(search_type, search_value):
             cur.close()
 
 
-
 def insert_customer(id, name, email, pwd, gender, phone, genres):
     cur = None
     try:
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
 
-        # 고객 정보 삽입
         sql = """
         INSERT INTO customer (c_id, c_name, email, pwd, gender, phone)
         VALUES (%s, %s, %s, %s, %s, %s);
@@ -148,7 +122,8 @@ def insert_customer(id, name, email, pwd, gender, phone, genres):
                 return False
 
         conn.commit()
-        print(f"Customer {name} inserted successfully.")
+        display_info('id', id)
+
         return True
 
     except Exception as e:
@@ -158,8 +133,7 @@ def insert_customer(id, name, email, pwd, gender, phone, genres):
     finally:
         if cur:
             cur.close()
-
-        
+ 
         
 def update_customer(id, email=None, password=None, phone=None):
     cur = None
@@ -167,7 +141,6 @@ def update_customer(id, email=None, password=None, phone=None):
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
 
-        # 업데이트할 필드 결정
         if email:
             target_field = 'email'
             target_value = email
@@ -181,7 +154,6 @@ def update_customer(id, email=None, password=None, phone=None):
             print("Error: No valid target specified for update.")
             return False
 
-        # 업데이트 쿼리 실행
         sql = f"UPDATE customer SET {target_field} = %s WHERE c_id = %s;"
         cur.execute(sql, (target_value, id))
 
@@ -191,9 +163,7 @@ def update_customer(id, email=None, password=None, phone=None):
             return False
 
         conn.commit()
-        print(f"Customer {id} updated successfully.")
 
-        # 업데이트된 정보 출력
         cur.execute("""
         SELECT cu.c_id, 
                cu.c_name, 
@@ -211,6 +181,7 @@ def update_customer(id, email=None, password=None, phone=None):
 
         if updated_row:
             column_names = [desc[0] for desc in cur.description]
+            print(f"Total rows: {len(updated_row)}")
             print_rows(column_names, updated_row)
         else:
             print("No results found.")
@@ -229,42 +200,66 @@ def delete_customer(id):
     cur = None
     try:
         cur = conn.cursor()
-        cur.execute("SET search_path to s_2021088304")
+        cur.execute("SET search_path TO s_2021088304")
+
+        sql = """
+        SELECT 
+            cu.c_id,
+            cu.c_name,
+            cu.email,
+            cu.gender,
+            cu.phone,
+            STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+        FROM customer cu
+            LEFT JOIN prefer p ON cu.c_id = p.c_id
+            LEFT JOIN genre gr ON p.gr_id = gr.gr_id
+        WHERE cu.c_id = %s
+        GROUP BY cu.c_id;
+        """
+        cur.execute(sql, (id,))
+        customer_info = cur.fetchone()
+
+        if not customer_info:
+            print(f"Error: No customer with id {id} found.")
+            return False
+
+        column_names = [desc[0] for desc in cur.description]
+        print(f"Total rows: {1}")
+        print_rows(column_names, [customer_info])
 
         tables = ['prefer', 'watch', 'comment']
         for table in tables:
             cur.execute(f"""
                 SELECT EXISTS (
-                    SELECT 1 
-                    FROM information_schema.tables 
+                    SELECT 1
+                    FROM information_schema.tables
                     WHERE table_name = '{table}'
                 );
             """)
             table_exists = cur.fetchone()[0]
-            
+
             if table_exists:
                 cur.execute(f"DELETE FROM {table} WHERE c_id = %s;", (id,))
 
         cur.execute("DELETE FROM customer WHERE c_id = %s;", (id,))
-
         if cur.rowcount == 0:
             print(f"Error: No customer with id {id} found.")
             conn.rollback()
             return False
 
         conn.commit()
-        print(f"Customer {id} deleted successfully.")
         return True
 
     except Exception as e:
         conn.rollback()
         print(f"Error deleting customer: {e}")
         return False
+
     finally:
         if cur:
             cur.close()
 
-
+            
 
 def main(args):
     if args.command == "info":
@@ -302,8 +297,6 @@ if __name__ == "__main__":
     #
     #print_command_to_file()
     #
-    start = time.time()
-    
     parser = argparse.ArgumentParser(description = """
     how to use
     1. info [-i(c_id) / -n(c_name) / -g(genre) / -a (all)] [value]
@@ -347,5 +340,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main(args)
     
-    print("Running Time: ", end="")
-    print(time.time() - start)

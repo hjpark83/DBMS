@@ -1,4 +1,3 @@
-import time
 import argparse
 from helpers.connection import conn
 from helpers.utils import print_rows
@@ -59,11 +58,11 @@ def display_info(search_type, search_value=None):
 
         elif search_type == 'genre':
             sql = base_sql + """
-            WHERE gr.gr_name = %(gr_name)s
             GROUP BY m.m_id
+            HAVING STRING_AGG(DISTINCT gr.gr_name, ', ') ILIKE %(gr_name)s
             ORDER BY m.m_id ASC;
             """
-            cur.execute(sql, {"gr_name": search_value})
+            cur.execute(sql, {"gr_name": f"%{search_value}%"})
 
         elif search_type == 'start_year':
             sql = base_sql + """
@@ -103,6 +102,7 @@ def display_info(search_type, search_value=None):
             return False
 
         column_names = [desc[0] for desc in cur.description]
+        print(f"Total rows: {len(rows)}")
         print_rows(column_names, rows)
         return True
 
@@ -135,7 +135,9 @@ def main(args):
             display_info('rating', args.rating)
 
 if __name__ == "__main__":
-    start = time.time()
+    #
+    #print_command_to_file()
+    #
     parser = argparse.ArgumentParser(description="""how to use
     1-1. info [-a(all) / -i(m_id) / -n(m_name) / -t(type) /-g(gr_name)]
     1-2. info [-sy(start_year) / -ey(end_year) / -ad(is_adult) / -r(rating)]
@@ -157,4 +159,3 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args)
-    print("Running Time:", time.time() - start)
