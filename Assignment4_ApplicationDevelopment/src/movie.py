@@ -138,12 +138,15 @@ if __name__ == "__main__":
     #
     #print_command_to_file()
     #
-    parser = argparse.ArgumentParser(description="""how to use
+    parser = argparse.ArgumentParser(description="""
+    how to use
     1-1. info [-a(all) / -i(m_id) / -n(m_name) / -t(type) /-g(gr_name)]
     1-2. info [-sy(start_year) / -ey(end_year) / -ad(is_adult) / -r(rating)]
     """, formatter_class=argparse.RawTextHelpFormatter)
 
-    subparsers = parser.add_subparsers(dest='command', help='select one of query types [info, ...]')
+    subparsers = parser.add_subparsers(dest='command', 
+        help='select one of query types [info, ...]')
+    
     parser_info = subparsers.add_parser('info', help='Display target movie info')
     group_info = parser_info.add_mutually_exclusive_group(required=True)
 

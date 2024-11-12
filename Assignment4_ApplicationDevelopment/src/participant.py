@@ -1,6 +1,11 @@
 import argparse
 from helpers.connection import conn
 from helpers.utils import print_rows
+from helpers.utils import print_rows_to_file
+from helpers.utils import is_valid_genre
+from helpers.utils import print_command_to_file
+from helpers.utils import make_csv
+from helpers.utils import is_valid_pro
 
 def display_info(search_type, search_value=None):
     cur = None
@@ -13,13 +18,14 @@ def display_info(search_type, search_value=None):
         cur.execute("SET search_path TO s_2021088304")
         
         base_sql = """
-        SELECT
+        SELECT 
             p.p_id,
             p.p_name,
             p.major_work,
-            STRING_AGG(DISTINCT pa.role, ', ') AS role
+            STRING_AGG(DISTINCT o.ocu_name, ', ') AS profession
         FROM participant p
         LEFT JOIN participate pa ON p.p_id = pa.p_id
+        LEFT JOIN occupation o ON pa.ordering = o.ocu_id
         """ # 공통적으로 사용되는 SQL문
 
         if search_type == 'all':
@@ -76,13 +82,16 @@ def main(args):
         if args.all:
             display_info('all', args.all)
         elif args.id:
-            display_info('id', args.id)
+            display_info('id',args.id)
         elif args.name:
             display_info('name', args.name)
-        elif args.role:
-            display_info('role', args.role)
-    else:
-        print("Invalid command")
+        elif args.profession:
+            if not is_valid_pro(args.profession) :
+                print(f"Error: {args.profession} is not valid profession.")
+            else :
+                display_info('profession', args.profession)
+    else :
+        print("Error: query command error.")
 
 
 if __name__ == "__main__":
@@ -98,11 +107,11 @@ if __name__ == "__main__":
     """, formatter_class=argparse.RawTextHelpFormatter)
 
     subparsers = parser.add_subparsers(dest='command', 
-        help='Select one of the query types [info]')
+        help='select one of the query types [info]')
     
     parser_info = subparsers.add_parser('info', help='Display participant information')
-
     group_info = parser_info.add_mutually_exclusive_group(required=True)
+
     group_info.add_argument('-a', dest='all', type=int, help='Display certain number of participants')
     group_info.add_argument('-i', dest='id', type=int, help='Participant ID')
     group_info.add_argument('-n', dest='name', type=str, help='Participant name')

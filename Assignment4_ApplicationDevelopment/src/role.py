@@ -83,12 +83,14 @@ if __name__ == "__main__":
     #
     #print_command_to_file()
     #
-    parser = argparse.ArgumentParser(description="""Usage:
-    1. info -a <limit> <role>    : Display all participants with the given role, limited by the specified number
-    2. info -o <movie_id> <role> : Display participants for a specific movie with the given role
+    parser = argparse.ArgumentParser(description="""
+    how to use:
+    1. info [-a value role]    : Display all participants with the given role, limited by the specified number
+    2. info [-i value role]    : Display participants for a specific movie with the given role
     """, formatter_class=argparse.RawTextHelpFormatter)
 
-    subparsers = parser.add_subparsers(dest='command', help='Select one of the query types [info, ...]')
+    subparsers = parser.add_subparsers(dest='command', 
+        help='select one of the query types [info, ...]')
 
     parser_info = subparsers.add_parser('info', help='Display participant associated with role info')
     group_info = parser_info.add_mutually_exclusive_group(required=True)

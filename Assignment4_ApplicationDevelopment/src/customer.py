@@ -9,10 +9,6 @@ from helpers.utils import make_csv
 def display_info(search_type, search_value):
     cur = None
     try:
-        if conn is None:
-            print("Database connection is not established")
-            return False
-
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
 
@@ -56,33 +52,32 @@ def display_info(search_type, search_value):
             sql = base_sql + """
             GROUP BY cu.c_id
             ORDER BY cu.c_id ASC
-            LIMIT %(limit)s;
+            LIMIT %(all)s;
             """
-            cur.execute(sql, {"limit": search_value})
+            cur.execute(sql, {"all": search_value})
 
         else:
-            print(f"Error: Invalid search type '{search_type}'")
+            print("can't search by", search_type)
             return False
 
         rows = cur.fetchall()
-        if rows:
+        if not rows:
+            print("No results found.")
+            return False
+        else:
             column_names = [desc[0] for desc in cur.description]
             #
             #print_rows_to_file(column_names, rows)
             #make_csv(column_names, rows)
             #
-            print(f"Total rows: {len(rows)}")
             print_rows(column_names, rows)
-        else:
-            print("No results found.")
-        return True
-
+            return True
+        
     except Exception as e:
-        print(f"Error: {e}")
-        return False
+        print(e)
+        
     finally:
-        if cur:
-            cur.close()
+        cur.close()
 
 
 def insert_customer(id, name, email, pwd, gender, phone, genres):
