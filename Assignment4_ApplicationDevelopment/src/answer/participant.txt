@@ -21,7 +21,7 @@ p_id | p_name      | major_work | profession
 92   | John Cleese | 0095159    | actor, producer, writer
 
 Command : [ .\participant.py info -pr actor ]
-Total rows: 466
+Total rows: 466 
 p_id     | p_name                          | major_work | profession                                     
 ---------------------------------------------------------------------------------------------------------
 53       | Robert Mitchum                  | 0039689    | actor, producer, writer                        
@@ -40,7 +40,7 @@ p_id     | p_name                          | major_work | profession
 1513     | Tim Matheson                    | 0077975    | actor, director, producer                      
 1556     | David Morse                     | 0120689    | actor, director, producer                      
 1654     | Ronald Reagan                   | 0034946    | actor, miscellaneous, production_manager       
-1813     | Dick Van Dyke                   | 0058331    | actor, producer, writer                        
+1813     | Dick Van Dyke                   | 0058331    | actor, producer, writer                          
 1826     | M. Emmet Walsh                  | 0083658    | actor, producer, stunts                        
 1957     | Lloyd Bochner                   | 0102510    | actor, archive_footage                         
 2051     | Jimmy Durante                   | 0057193    | actor, music_department, soundtrack            

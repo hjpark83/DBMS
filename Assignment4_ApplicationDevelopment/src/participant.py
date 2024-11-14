@@ -22,16 +22,16 @@ def display_info(search_type, search_value=None):
             p.p_id,
             p.p_name,
             p.major_work,
-            STRING_AGG(DISTINCT o.ocu_name, ', ') AS profession
+            STRING_AGG(DISTINCT o.ocu_name, ', ' ORDER BY o.ocu_name ASC) AS profession
         FROM participant p
-        LEFT JOIN participate pa ON p.p_id = pa.p_id
-        LEFT JOIN occupation o ON pa.ordering = o.ocu_id
+        JOIN profession pf ON pf.p_id = p.p_id
+        JOIN occupation o ON o.ocu_id = pf.ocu_id
         """ # 공통적으로 사용되는 SQL문
 
         if search_type == 'all':
             sql = base_sql + """
             GROUP BY p.p_id, p.p_name, p.major_work
-            ORDER BY p.p_id
+            ORDER BY p.p_id ASC
             LIMIT %s;
             """
             cur.execute(sql, (search_value,))
@@ -50,10 +50,16 @@ def display_info(search_type, search_value=None):
             """
             cur.execute(sql, (f"%{search_value}%",))
 
-        elif search_type == 'role':
+        elif search_type == 'profession':
+            # Corrected query for filtering by profession
             sql = base_sql + """
+            WHERE p.p_id IN (
+                SELECT pf.p_id 
+                FROM profession pf 
+                JOIN occupation o ON o.ocu_id = pf.ocu_id 
+                WHERE LOWER(o.ocu_name) LIKE LOWER(%s)
+            )
             GROUP BY p.p_id, p.p_name, p.major_work
-            HAVING LOWER(STRING_AGG(DISTINCT pa.role, ', ')) LIKE LOWER(%s)
             ORDER BY p.p_id;
             """
             cur.execute(sql, (f"%{search_value}%",))
@@ -103,7 +109,7 @@ if __name__ == "__main__":
         1. info -a <limit>              : Display participants in ascending order by p_id
         2. info -i <participant_id>     : Display participants by p_id
         3. info -n <participant_name>   : Display participants by p_name
-        4. info -r <role>               : Display participants by profession name
+        4. info -pr <profession>        : Display participants by profession name
     """, formatter_class=argparse.RawTextHelpFormatter)
 
     subparsers = parser.add_subparsers(dest='command', 
@@ -115,7 +121,7 @@ if __name__ == "__main__":
     group_info.add_argument('-a', dest='all', type=int, help='Display certain number of participants')
     group_info.add_argument('-i', dest='id', type=int, help='Participant ID')
     group_info.add_argument('-n', dest='name', type=str, help='Participant name')
-    group_info.add_argument('-pr', dest='role', type=str, help='Role (e.g., actor, director)')
+    group_info.add_argument('-pr', dest='profession', type=str, help='Profession (e.g., actor, director)')
 
     args = parser.parse_args()
     main(args)
