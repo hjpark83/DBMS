@@ -67,9 +67,10 @@ def display_info(search_type, search_value):
         else:
             column_names = [desc[0] for desc in cur.description]
             #
-            #print_rows_to_file(column_names, rows)
-            #make_csv(column_names, rows)
+            # print_rows_to_file(column_names, rows)
+            # make_csv(column_names, rows)
             #
+            print(f"Total rows: {len(rows)}")
             print_rows(column_names, rows)
             return True
         
@@ -92,9 +93,7 @@ def insert_customer(id, name, email, pwd, gender, phone, genres):
         """
         cur.execute(sql, (id, name, email, pwd, gender, phone))
 
-        genres_list = genres.split()
-
-        for genre in genres_list:
+        for genre in genres:
             genre = genre.strip()
             if not is_valid_genre(genre):
                 print(f"Error: '{genre}' is not a valid genre.")
@@ -319,13 +318,13 @@ if __name__ == "__main__":
     parser_insert.add_argument('pwd', type=str, help='password of customer entity')
     parser_insert.add_argument('gender', type=str, help='gender of customer entity')
     parser_insert.add_argument('phone', type=str, help='phone number of customer entity')
-    parser_insert.add_argument('-g', dest='genres', type=str, help='preferred genres (comma-separated)')
+    parser_insert.add_argument('-g', dest='genres', type=str, nargs='+', help='preferred genres')
 
     # [1-3] update
     parser_update = subparsers.add_parser('update', help='Update customer data')
     parser_update.add_argument('-i', dest='id', type=int, required=True, help='Customer ID to update')
     parser_update.add_argument('-m', '--email', type=str, help='Update email')
-    parser_update.add_argument('-p', '--password', type=str, help='Update password')
+    parser_update.add_argument('-p', '--password', type=str, nargs='+', help='Update password')
     parser_update.add_argument('-ph', '--phone', type=str, help='Update phone number')
 
     # [1-4] delete
