@@ -135,6 +135,30 @@ def update_customer(id, email=None, password=None, phone=None):
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
 
+        update_query = """
+        SELECT cu.c_id, 
+               cu.c_name, 
+               cu.email, 
+               cu.gender, 
+               cu.phone, 
+               STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+        FROM customer cu
+        LEFT JOIN prefer p ON cu.c_id = p.c_id
+        LEFT JOIN genre gr ON p.gr_id = gr.gr_id
+        WHERE cu.c_id = %s
+        GROUP BY cu.c_id;
+        """
+        cur.execute(update_query, (id,))
+        before_update = cur.fetchall()
+        
+        if before_update:
+            column_names = [desc[0] for desc in cur.description]
+            print(f"Total rows: {len(before_update)}")
+            print_rows(column_names, before_update)
+        else:
+            print(f"No customer found with id {id}")
+            return False
+
         if email:
             target_field = 'email'
             target_value = email
@@ -157,29 +181,18 @@ def update_customer(id, email=None, password=None, phone=None):
             return False
 
         conn.commit()
+        print("\n")
 
-        cur.execute("""
-        SELECT cu.c_id, 
-               cu.c_name, 
-               cu.email, 
-               cu.gender, 
-               cu.phone,
-               STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
-        FROM customer cu
-            LEFT JOIN prefer p ON cu.c_id = p.c_id
-            LEFT JOIN genre gr ON p.gr_id = gr.gr_id
-        WHERE cu.c_id = %s
-        GROUP BY cu.c_id;
-        """, (id,))
-        updated_row = cur.fetchall()
-
-        if updated_row:
+        cur.execute(update_query, (id,))
+        after_update = cur.fetchall()
+        
+        if after_update:
             column_names = [desc[0] for desc in cur.description]
-            print(f"Total rows: {len(updated_row)}")
-            print_rows(column_names, updated_row)
+            print(f"Total rows: {len(after_update)}")
+            print_rows(column_names, after_update)
         else:
-            print("No results found.")
-        return True
+            print(f"No customer found with id {id}")
+            return False
 
     except Exception as e:
         conn.rollback()
