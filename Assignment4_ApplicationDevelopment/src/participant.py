@@ -51,7 +51,6 @@ def display_info(search_type, search_value=None):
             cur.execute(sql, (f"%{search_value}%",))
 
         elif search_type == 'profession':
-            # Corrected query for filtering by profession
             sql = base_sql + """
             WHERE p.p_id IN (
                 SELECT pf.p_id 
