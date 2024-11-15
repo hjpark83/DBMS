@@ -16,7 +16,7 @@ def display_info(search_type, search_value=None):
         SELECT
             m.m_id, m.m_name, m.m_type, m.start_year, m.end_year,
             m.is_adult, m.runtimes, m.m_rating AS imdb_rating,
-            (m.m_rating * m.votes + COALESCE(SUM(DISTINCT ct.rating), 0)) / (m.votes + COUNT(DISTINCT ct.rating)) AS final_rating,
+            (m.m_rating * m.votes + COALESCE(SUM(ct.rating), 0)) / (m.votes + COUNT(ct.rating)) AS final_rating,
             STRING_AGG(DISTINCT gr.gr_name, ', ') AS genres
         FROM movie m
             LEFT JOIN classify c ON m.m_id = c.m_id
