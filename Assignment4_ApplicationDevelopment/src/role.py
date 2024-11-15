@@ -1,3 +1,4 @@
+import time
 import argparse
 from helpers.connection import conn
 from helpers.utils import print_rows
@@ -83,6 +84,7 @@ if __name__ == "__main__":
     #
     #print_command_to_file()
     #
+    start = time.time()
     parser = argparse.ArgumentParser(description="""
     how to use:
     1. info [-a value role]    : Display all participants with the given role, limited by the specified number
@@ -101,3 +103,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args) 
+    print("Running Time: ", end="")
+    print(time.time() - start)

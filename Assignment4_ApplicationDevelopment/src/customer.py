@@ -1,3 +1,4 @@
+import time
 import argparse
 from helpers.connection import conn
 from helpers.utils import print_rows
@@ -304,6 +305,7 @@ if __name__ == "__main__":
     #
     #print_command_to_file()
     #
+    start = time.time()
     parser = argparse.ArgumentParser(description = """
     how to use
     1. info [-i(c_id) / -n(c_name) / -g(genre) / -a (all)] [value]
@@ -346,4 +348,5 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     main(args)
-    
+    print("Running Time: ", end="")
+    print(time.time() - start)
