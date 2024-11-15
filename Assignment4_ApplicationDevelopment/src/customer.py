@@ -271,7 +271,6 @@ def delete_customer(id):
         if cur:
             cur.close()
 
-            
 
 def main(args):
     if args.command == "info":
