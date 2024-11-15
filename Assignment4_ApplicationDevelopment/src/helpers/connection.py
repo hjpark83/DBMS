@@ -6,7 +6,7 @@ try:
     conn = pg.connect(
         dbname="postgres" ,
         user="postgres",
-        password="0803",
+        password="####",
         host="localhost",
         port="5432"
     )
