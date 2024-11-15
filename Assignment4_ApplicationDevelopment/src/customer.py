@@ -135,65 +135,69 @@ def update_customer(id, email=None, password=None, phone=None):
     try:
         cur = conn.cursor()
         cur.execute("SET search_path to s_2021088304")
-
-        update_query = """
+        
+        fetch_query = """
         SELECT cu.c_id, 
                cu.c_name, 
                cu.email, 
                cu.gender, 
-               cu.phone, 
-               STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres
+               cu.phone,
+               STRING_AGG(DISTINCT gr.gr_name, ', ') AS preferred_genres,
+               cu.pwd
         FROM customer cu
         LEFT JOIN prefer p ON cu.c_id = p.c_id
         LEFT JOIN genre gr ON p.gr_id = gr.gr_id
         WHERE cu.c_id = %s
         GROUP BY cu.c_id;
         """
-        cur.execute(update_query, (id,))
-        before_update = cur.fetchall()
         
-        if before_update:
-            column_names = [desc[0] for desc in cur.description]
-            print(f"Total rows: {len(before_update)}")
-            print_rows(column_names, before_update)
-        else:
-            print(f"No customer found with id {id}")
+        cur.execute(fetch_query, (id,))
+        customer_info = cur.fetchone()
+        
+        if not customer_info:
             return False
-
+        
+        current_password = customer_info[-1]
+        
+        column_names = [desc[0] for desc in cur.description if desc[0] != 'pwd']
+        customer_data = customer_info[:-1]
+        print(f"Total rows: 1")
+        print_rows(column_names, [customer_data])
+        
         if email:
             target_field = 'email'
             target_value = email
-        elif password:
-            target_field = 'pwd'
-            target_value = password
         elif phone:
             target_field = 'phone'
             target_value = phone
+        elif password:
+            if password != current_password:
+                return False
+            target_field = 'pwd'
+            target_value = password
         else:
             print("Error: No valid target specified for update.")
             return False
-
+        
         sql = f"UPDATE customer SET {target_field} = %s WHERE c_id = %s;"
         cur.execute(sql, (target_value, id))
-
+        
         if cur.rowcount == 0:
             print(f"Error: No customer with id {id} found.")
             conn.rollback()
             return False
-
-        conn.commit()
-        print("\n")
-
-        cur.execute(update_query, (id,))
-        after_update = cur.fetchall()
         
-        if after_update:
-            column_names = [desc[0] for desc in cur.description]
-            print(f"Total rows: {len(after_update)}")
-            print_rows(column_names, after_update)
-        else:
-            print(f"No customer found with id {id}")
-            return False
+        conn.commit()
+        
+        cur.execute(fetch_query, (id,))
+        updated_info = cur.fetchone()
+        if updated_info:
+            updated_data = updated_info[:-1]
+            print("\n")
+            print(f"Total rows: 1")
+            print_rows(column_names, [updated_data])
+        
+        return True
 
     except Exception as e:
         conn.rollback()
