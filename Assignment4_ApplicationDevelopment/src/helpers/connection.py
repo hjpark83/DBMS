@@ -10,6 +10,5 @@ try:
         host="localhost",
         port="5432"
     )
-    # print("DB Connection Established")
 except Exception as e:
     print("Cannot Create DB Connection :", e)
